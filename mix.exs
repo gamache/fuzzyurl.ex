@@ -2,13 +2,24 @@ defmodule Fuzzyurl.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :fuzzyurl,
-     version: "0.0.1",
-     elixir: "~> 1.1",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     test_coverage: [tool: Coverex.Task],
-     deps: deps]
+    [
+      app: :fuzzyurl,
+      description: ~S"""
+        Fuzzyurl is a library for non-strict parsing, construction, and
+        fuzzy-matching of URLs.
+      """,
+      package: [
+        maintainers: ["pete gamache"],
+        licenses: ["Apache 2.0"],
+        links: %{"GitHub" => "https://github.com/gamache/fuzzyurl.ex"}
+      ],
+      version: "0.1.0",
+      elixir: "~> 1.1",
+      build_embedded: Mix.env == :prod,
+      start_permanent: Mix.env == :prod,
+      test_coverage: [tool: Coverex.Task],
+      deps: deps
+    ]
   end
 
   # Configuration for the OTP application
