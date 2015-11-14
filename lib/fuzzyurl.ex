@@ -28,7 +28,10 @@ defmodule Fuzzyurl do
 
   def new(), do: %Fuzzyurl{}
 
-  def new(string) when is_binary(string), do: Strings.from_string(string)
+  def new(string) when is_binary(string) do
+    {:ok, fuzzy_url} = Strings.from_string(string)
+    fuzzy_url
+  end
 
   def new(args), do: new |> with(args)
 

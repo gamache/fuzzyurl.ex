@@ -28,7 +28,12 @@ defmodule Fuzzyurl.Strings do
         fu = nc
              |> Map.to_list
              |> Enum.reduce(%Fuzzyurl{}, fn ({k,v}, acc) ->
-                  Map.put(acc, String.to_atom(k), v) end)
+                  if v != "" do
+                    Map.put(acc, String.to_atom(k), v)
+                  else
+                    acc
+                  end
+                end)
         {:ok, fu}
     end
   end
@@ -53,4 +58,5 @@ defmodule Fuzzyurl.Strings do
     ]
     url_pieces |> Enum.join
   end
+
 end
