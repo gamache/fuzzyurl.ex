@@ -40,7 +40,7 @@ defmodule Fuzzyurl.MatchTest do
 
   describe "match" do
     it "returns 0 for full wildcard" do
-      assert(0 == match(%Fuzzyurl{}, %Fuzzyurl{}))
+      assert(0 == match(Fuzzyurl.mask, Fuzzyurl.new))
     end
 
     it "returns 8 for full exact match" do
@@ -49,21 +49,21 @@ defmodule Fuzzyurl.MatchTest do
     end
 
     it "returns 1 for one exact match" do
-      mask = %Fuzzyurl{hostname: "example.com"}
-      url = %Fuzzyurl{mask | protocol: "http", path: "/index.html"}
+      mask = %{Fuzzyurl.mask | hostname: "example.com"}
+      url = %Fuzzyurl{hostname: "example.com", protocol: "http", path: "/index.html"}
       assert(1 == match(mask, url))
     end
 
     it "infers protocol from port" do
-      mask = %Fuzzyurl{port: "80"}
-      url = %Fuzzyurl{mask | protocol: "http", port: nil}
+      mask = %{Fuzzyurl.mask | port: "80"}
+      url = %Fuzzyurl{protocol: "http"}
       assert(1 == match(mask, url))
       assert(:no_match == match(mask, %Fuzzyurl{url | port: "443"}))
     end
 
     it "infers port from protocol" do
-      mask = %Fuzzyurl{protocol: "https"}
-      url = %Fuzzyurl{mask | protocol: nil, port: "443"}
+      mask = %{Fuzzyurl.mask | protocol: "https"}
+      url = %Fuzzyurl{port: "443"}
       assert(1 == match(mask, url))
       assert(:no_match == match(mask, %Fuzzyurl{url | protocol: "http"}))
     end
@@ -72,18 +72,18 @@ defmodule Fuzzyurl.MatchTest do
 
   describe "matches?" do
     it "returns true on matches" do
-      assert(true == matches?(%Fuzzyurl{}, %Fuzzyurl{}))
+      assert(true == matches?(Fuzzyurl.mask, Fuzzyurl.new))
     end
 
     it "returns false on non-matches" do
-      assert(false == matches?(%Fuzzyurl{port: "666"}, %Fuzzyurl{}))
+      assert(false == matches?(Fuzzyurl.mask(port: "666"), Fuzzyurl.new))
     end
   end
 
 
   describe "match_scores" do
     it "returns all zeroes for full wildcard" do
-      scores = match_scores(%Fuzzyurl{}, %Fuzzyurl{})
+      scores = match_scores(Fuzzyurl.mask, Fuzzyurl.new)
                |> Map.from_struct
                |> Map.values
       assert(false == Enum.any?(scores, fn (x) -> x != 0 end))

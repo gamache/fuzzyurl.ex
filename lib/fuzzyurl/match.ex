@@ -80,6 +80,10 @@ defmodule Fuzzyurl.Match do
         :no_match
     end
   end
+  def fuzzy_match("*", nil), do: 0
+  def fuzzy_match(_, nil), do: :no_match
+  def fuzzy_match(nil, _), do: :no_match
+
 
 end
 

@@ -1,4 +1,4 @@
 # Fuzzyurl
 
-Non-strict URL parsing, manipulation, and fuzzy matching in Elixir.
+Non-strict parsing, manipulation, and fuzzy matching of URLs in Elixir.
 
