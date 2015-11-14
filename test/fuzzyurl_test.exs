@@ -39,6 +39,13 @@ defmodule FuzzyurlTest do
     end
   end
 
+  describe "from_string" do
+    it "creates Fuzzyurl from string" do
+      fu = %Fuzzyurl{protocol: "http", hostname: "example.com", path: "/index.html"}
+      assert(fu == Fuzzyurl.from_string("http://example.com/index.html"))
+    end
+  end
+
   describe "mask/0" do
     it "creates the correct Fuzzyurl" do
       fu = %Fuzzyurl{
@@ -117,9 +124,10 @@ defmodule FuzzyurlTest do
     end
   end
 
-  describe "fuzzy_match" do
+  describe "to_string" do
     it "is delegated" do
-      assert(0 = Fuzzyurl.fuzzy_match("*", "hi mom"))
+      fu = Fuzzyurl.new(protocol: "http", hostname: "example.com")
+      assert("http://example.com" == Fuzzyurl.to_string(fu))
     end
   end
 
