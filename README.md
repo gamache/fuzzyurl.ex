@@ -7,7 +7,7 @@ Non-strict parsing, manipulation, and fuzzy matching of URLs in Elixir.
 [![Coverage Status](https://coveralls.io/repos/gamache/fuzzyurl.ex/badge.svg?branch=master&service=github)](https://coveralls.io/github/gamache/fuzzyurl.ex?branch=master)
 
 
-## [The full documentation for Fuzzyurl is
+[The full documentation for Fuzzyurl is
 here.](http://hexdocs.pm/fuzzyurl/Fuzzyurl.html)
 
 
