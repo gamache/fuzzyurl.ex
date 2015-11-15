@@ -14,7 +14,7 @@ defmodule Fuzzyurl.Mixfile do
         links: %{"GitHub" => "https://github.com/gamache/fuzzyurl.ex"}
       ],
       version: "0.1.0",
-      elixir: "~> 1.1",
+      elixir: "~> 1.0",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       test_coverage: [tool: Coverex.Task],
