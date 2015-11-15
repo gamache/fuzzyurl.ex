@@ -97,8 +97,8 @@ creation of URL masks.
 `Fuzzyurl.best_match`, given a list of URL masks and a URL, will return
 the mask which most closely matches the URL:
 
-    iex> masks = [Fuzzyurl.mask(path: "/foo/*"), Fuzzyurl.mask(path: "/foo/bar"), Fuzzyurl.mask]
-    iex> Fuzzyurl.best_match(masks, "http://exmaple.com/foo/bar")
+    iex> masks = ["/foo/*", "/foo/bar", Fuzzyurl.mask]
+    iex> Fuzzyurl.best_match(masks, "http://example.com/foo/bar")
     %Fuzzyurl{fragment: "*", hostname: "*", password: "*", path: "/foo/bar", port: "*", protocol: "*", query: "*", username: "*"}
 
 
