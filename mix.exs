@@ -17,7 +17,7 @@ defmodule Fuzzyurl.Mixfile do
       elixir: "~> 1.0",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      test_coverage: [tool: Coverex.Task, tool: ExCoveralls],
+      test_coverage: [tool: ExCoveralls],
       preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test],
       deps: deps
     ]
