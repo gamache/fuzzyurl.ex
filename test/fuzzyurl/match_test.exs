@@ -1,6 +1,7 @@
 defmodule Fuzzyurl.MatchTest do
   use ExSpec, async: true
   import Fuzzyurl.Match
+  doctest Fuzzyurl.Match
 
   describe "fuzzy_match" do
     it "returns 0 for full wildcard" do
@@ -20,6 +21,7 @@ defmodule Fuzzyurl.MatchTest do
     it "handles **.example.com" do
       assert(0 == fuzzy_match("**.example.com", "api.v1.example.com"))
       assert(0 == fuzzy_match("**.example.com", "example.com"))
+      assert(:no_match == fuzzy_match("**.example.com", "zzzexample.com"))
     end
 
     it "handles path/*" do
@@ -30,6 +32,7 @@ defmodule Fuzzyurl.MatchTest do
     it "handles path/**" do
       assert(0 == fuzzy_match("path/**", "path/a/b/c"))
       assert(0 == fuzzy_match("path/**", "path"))
+      assert(:no_match == fuzzy_match("path/**", "pathzzz"))
     end
 
     it "returns :no_match for bad matches with no wildcards" do

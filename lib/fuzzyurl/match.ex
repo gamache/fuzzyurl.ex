@@ -69,11 +69,11 @@ defmodule Fuzzyurl.Match do
       {x, x, _, _} ->
         1
       {"**." <> m, v, _, _} ->
-        if String.ends_with?(v, m), do: 0, else: :no_match
+        if m == v or String.ends_with?(v, "."<>m), do: 0, else: :no_match
       {"*" <> m, v, _, _} ->
         if String.ends_with?(v, m), do: 0, else: :no_match
       {_, _, "**/" <> m, v} ->
-        if String.ends_with?(v, m), do: 0, else: :no_match
+        if m == v or String.ends_with?(v, "/"<>m), do: 0, else: :no_match
       {_, _, "*" <> m, v} ->
         if String.ends_with?(v, m), do: 0, else: :no_match
       _ ->
@@ -84,6 +84,23 @@ defmodule Fuzzyurl.Match do
   def fuzzy_match(_, nil), do: :no_match
   def fuzzy_match(nil, _), do: :no_match
 
+
+  @doc ~S"""
+  From a list of Fuzzyurl masks, returns the one which best matches `url`.
+  Returns nil if none of `masks` match.
+
+      iex> masks = [Fuzzyurl.mask(path: "/foo/*"), Fuzzyurl.mask(path: "/foo/bar"), Fuzzyurl.mask]
+      iex> Fuzzyurl.Match.best_match(masks, Fuzzyurl.from_string("http://exmaple.com/foo/bar"))
+      %Fuzzyurl{fragment: "*", hostname: "*", password: "*", path: "/foo/bar", port: "*", protocol: "*", query: "*", username: "*"}
+  """
+  def best_match(masks, url) do
+    {mask, _} = masks
+                |> Enum.map(fn (m) -> {m, match(m, url)} end)
+                |> Enum.filter(fn ({_, score}) -> score != :no_match end)
+                |> Enum.sort(fn ({_, a}, {_, b}) -> a >= b end)
+                |> List.first
+    mask
+  end
 
 end
 

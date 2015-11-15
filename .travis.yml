@@ -1,2 +1,4 @@
 language: elixir
+script:
+  - "MIX_ENV=test mix do deps.get, compile, coveralls.travis"
 

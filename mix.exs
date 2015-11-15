@@ -13,11 +13,12 @@ defmodule Fuzzyurl.Mixfile do
         licenses: ["Apache 2.0"],
         links: %{"GitHub" => "https://github.com/gamache/fuzzyurl.ex"}
       ],
-      version: "0.1.0",
+      version: "0.2.0",
       elixir: "~> 1.0",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      test_coverage: [tool: Coverex.Task],
+      test_coverage: [tool: Coverex.Task, tool: ExCoveralls],
+      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test],
       deps: deps
     ]
   end
@@ -43,6 +44,7 @@ defmodule Fuzzyurl.Mixfile do
       {:ex_spec, "~> 1.0.0", only: :test},
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.10", only: :dev},
+      {:excoveralls, "~> 0.4", only: :test},
       {:coverex, "~> 1.4.7", only: :test}
     ]
   end
