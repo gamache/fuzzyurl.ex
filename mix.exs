@@ -44,8 +44,7 @@ defmodule Fuzzyurl.Mixfile do
       {:ex_spec, "~> 1.0.0", only: :test},
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.10", only: :dev},
-      {:excoveralls, "~> 0.4", only: :test},
-      {:coverex, "~> 1.4.7", only: :test}
+      {:excoveralls, "~> 0.4", only: :test}
     ]
   end
 end

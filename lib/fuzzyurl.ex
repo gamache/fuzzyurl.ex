@@ -1,4 +1,6 @@
 defmodule Fuzzyurl do
+
+  ## N.B. when this moduledoc changes, it should be copy/pasted into README.md
   @moduledoc ~S"""
   Fuzzyurl provides two related functions: non-strict parsing of URLs or
   URL-like strings into their component pieces (protocol, username, password,
@@ -72,11 +74,14 @@ defmodule Fuzzyurl do
   `Fuzzyurl.best_match`, given a list of URL masks and a URL, will return
   the mask which most closely matches the URL:
 
-      iex> masks = [Fuzzyurl.mask(path: "/foo/*"), Fuzzyurl.mask(path: "/foo/bar"), Fuzzyurl.mask]
-      iex> Fuzzyurl.best_match(masks, "http://exmaple.com/foo/bar")
+      iex> masks = ["/foo/*", "/foo/bar", Fuzzyurl.mask]
+      iex> Fuzzyurl.best_match(masks, "http://example.com/foo/bar")
       %Fuzzyurl{fragment: "*", hostname: "*", password: "*", path: "/foo/bar", port: "*", protocol: "*", query: "*", username: "*"}
 
   """
+
+  @type t :: %Fuzzyurl{}
+  @type string_or_fuzzyurl :: String.t | Fuzzyurl.t
 
   alias Fuzzyurl.Match
   alias Fuzzyurl.Strings
@@ -98,6 +103,7 @@ defmodule Fuzzyurl do
       iex> Fuzzyurl.new()
       %Fuzzyurl{fragment: nil, hostname: nil, password: nil, path: nil, port: nil, protocol: nil, query: nil, username: nil}
   """
+  @spec new() :: Fuzzyurl.t
   def new(), do: %Fuzzyurl{}
 
   @doc ~S"""
@@ -106,6 +112,7 @@ defmodule Fuzzyurl do
       iex> Fuzzyurl.new("http", "user", "pass", "example.com", "80", "/", "query=true", "123")
       %Fuzzyurl{fragment: "123", hostname: "example.com", password: "pass", path: "/", port: "80", protocol: "http", query: "query=true", username: "user"}
   """
+  @spec new(String.t, String.t, String.t, String.t, String.t, String.t, String.t, String.t) :: Fuzzyurl.t
   def new(protocol, username, password, hostname, port, path, query, fragment) do
     %Fuzzyurl{
       protocol: protocol,
@@ -127,6 +134,7 @@ defmodule Fuzzyurl do
       iex> Fuzzyurl.new(hostname: "example.com", protocol: "http")
       %Fuzzyurl{fragment: nil, hostname: "example.com", password: nil, path: nil, port: nil, protocol: "http", query: nil, username: nil}
   """
+  @spec new([tuple]) :: Fuzzyurl.t
   def new(params), do: new |> with(params)
 
 
@@ -140,7 +148,12 @@ defmodule Fuzzyurl do
       iex> fuzzy_url |> Fuzzyurl.with(protocol: "https", path: "/index.html")
       %Fuzzyurl{fragment: nil, hostname: "example.com", password: nil, path: "/index.html", port: nil, protocol: "https", query: nil, username: nil}
   """
-  def with(fuzzy_url, %{} = params), do: with(fuzzy_url, Map.to_list(params))
+  @spec with(Fuzzyurl.t, map) :: Fuzzyurl.t
+  def with(fuzzy_url, %{} = params) do
+    with(fuzzy_url, Map.to_list(params))
+  end
+
+  @spec with(Fuzzyurl.t, [tuple]) :: Fuzzyurl.t
   def with(fuzzy_url, params) do
     Enum.reduce(params, fuzzy_url, fn ({k,v}, acc) ->
       ## prevent struct damage by checking keys
@@ -156,6 +169,7 @@ defmodule Fuzzyurl do
       iex> Fuzzyurl.mask()
       %Fuzzyurl{fragment: "*", hostname: "*", password: "*", path: "*", port: "*", protocol: "*", query: "*", username: "*"}
   """
+  @spec mask() :: Fuzzyurl.t
   def mask(), do: new("*", "*", "*", "*", "*", "*", "*", "*")
 
   @doc ~S"""
@@ -165,6 +179,7 @@ defmodule Fuzzyurl do
       iex> Fuzzyurl.mask(hostname: "example.com")
       %Fuzzyurl{fragment: "*", hostname: "example.com", password: "*", path: "*", port: "*", protocol: "*", query: "*", username: "*"}
   """
+  @spec mask(map | [tuple]) :: Fuzzyurl.t
   def mask(params), do: mask |> with(params)
 
 
@@ -175,25 +190,27 @@ defmodule Fuzzyurl do
 
   `url` may be a Fuzzyurl or a string.
 
-      iex> mask = Fuzzyurl.mask(hostname: "example.com")
-      iex> Fuzzyurl.match(mask, "http://example.com")
+      iex> Fuzzyurl.match("http://example.com", "http://example.com")
+      2
+      iex> Fuzzyurl.match("example.com", "http://example.com")
       1
-      iex> Fuzzyurl.match(mask, "http://nope.example.com")
+      iex> Fuzzyurl.match("**.example.com", "http://example.com")
+      0
+      iex> Fuzzyurl.match("*.example.com", "http://example.com")
       :no_match
   """
-  def match(%Fuzzyurl{}=mask, %Fuzzyurl{}=url) do
-    Match.match(mask, url)
-  end
-
-  def match(%Fuzzyurl{}=mask, url) when is_binary(url) do
-    Match.match(mask, from_string(url))
+  @spec match(string_or_fuzzyurl, string_or_fuzzyurl) :: non_neg_integer | :no_match
+  def match(mask, url) do
+    m = if is_binary(mask), do: from_string(mask, mask: true), else: mask
+    u = if is_binary(url), do: from_string(url), else: url
+    Match.match(m, u)
   end
 
 
   @doc ~S"""
   Returns true if `mask` matches `url`, false otherwise.
 
-  `url` may be a Fuzzyurl or a string.
+  `mask` and `url` may each be a Fuzzyurl or a string.
 
       iex> mask = Fuzzyurl.mask(hostname: "example.com")
       iex> Fuzzyurl.matches?(mask, "http://example.com")
@@ -201,12 +218,11 @@ defmodule Fuzzyurl do
       iex> Fuzzyurl.matches?(mask, "http://nope.example.com")
       false
   """
-  def matches?(%Fuzzyurl{}=mask, %Fuzzyurl{}=url) do
-    Match.matches?(mask, url)
-  end
-
-  def matches?(%Fuzzyurl{}=mask, url) when is_binary(url) do
-    Match.matches?(mask, from_string(url))
+  @spec matches?(string_or_fuzzyurl, string_or_fuzzyurl) :: false | true
+  def matches?(mask, url) do
+    m = if is_binary(mask), do: from_string(mask, mask: true), else: mask
+    u = if is_binary(url), do: from_string(url), else: url
+    Match.matches?(m, u)
   end
 
 
@@ -214,18 +230,17 @@ defmodule Fuzzyurl do
   Returns a Fuzzyurl struct containing values indicating match quality:
   0 for a wildcard match, 1 for exact match, and :no_match otherwise.
 
-  `url` may be a Fuzzyurl or a string.
+  `mask` and `url` may each be a Fuzzyurl or a string.
 
       iex> mask = Fuzzyurl.mask(hostname: "example.com")
       iex> Fuzzyurl.match_scores(mask, "http://example.com")
       %Fuzzyurl{fragment: 0, hostname: 1, password: 0, path: 0, port: 0, protocol: 0, query: 0, username: 0}
   """
-  def match_scores(%Fuzzyurl{}=mask, %Fuzzyurl{}=url) do
-    Match.match_scores(mask, url)
-  end
-
-  def match_scores(%Fuzzyurl{}=mask, url) when is_binary(url) do
-    Match.match_scores(mask, from_string(url))
+  @spec match_scores(string_or_fuzzyurl, string_or_fuzzyurl) :: Fuzzyurl.t
+  def match_scores(mask, url) do
+    m = if is_binary(mask), do: from_string(mask, mask: true), else: mask
+    u = if is_binary(url), do: from_string(url), else: url
+    Match.match_scores(m, u)
   end
 
 
@@ -233,18 +248,17 @@ defmodule Fuzzyurl do
   From a list of Fuzzyurl masks, returns the one which best matches `url`.
   Returns nil if none of `masks` match.
 
-  `url` may be a Fuzzyurl or a string.
+  `url` and each mask may be a Fuzzyurl or a string.
 
-      iex> masks = [Fuzzyurl.mask(path: "/foo/*"), Fuzzyurl.mask(path: "/foo/bar"), Fuzzyurl.mask]
-      iex> Fuzzyurl.best_match(masks, "http://exmaple.com/foo/bar")
+      iex> masks = ["/foo/*", "/foo/bar", Fuzzyurl.mask]
+      iex> Fuzzyurl.best_match(masks, "http://example.com/foo/bar")
       %Fuzzyurl{fragment: "*", hostname: "*", password: "*", path: "/foo/bar", port: "*", protocol: "*", query: "*", username: "*"}
   """
-  def best_match(masks, %Fuzzyurl{}=url) do
-    Match.best_match(masks, url)
-  end
-
-  def best_match(masks, url) when is_binary(url) do
-    Match.best_match(masks, from_string(url))
+  @spec best_match([string_or_fuzzyurl], string_or_fuzzyurl) :: Fuzzyurl.t | nil
+  def best_match(masks, url) do
+    masks
+    |> Enum.map(fn (m) -> if is_binary(m), do: from_string(m, mask: true), else: m end)
+    |> Match.best_match(if is_binary(url), do: from_string(url), else: url)
   end
 
 
@@ -255,19 +269,25 @@ defmodule Fuzzyurl do
       iex> Fuzzyurl.to_string(fuzzy_url)
       "http://example.com"
   """
+  @spec to_string(Fuzzyurl.t) :: String.t
   def to_string(%Fuzzyurl{}=fuzzy_url) do
     Strings.to_string(fuzzy_url)
   end
 
 
   @doc ~S"""
-  Creates a new Fuzzyurl from the given URL string.
+  Creates a new Fuzzyurl from the given URL string.  Provide `mask: true`
+  when creating a URL mask.
 
       iex> Fuzzyurl.from_string("http://example.com")
       %Fuzzyurl{fragment: nil, hostname: "example.com", password: nil, path: nil, port: nil, protocol: "http", query: nil, username: nil}
+      iex> Fuzzyurl.from_string("*.example.com:443", mask: true)
+      %Fuzzyurl{fragment: "*", hostname: "*.example.com", password: "*", path: "*", port: "443", protocol: "*", query: "*", username: "*"}
   """
-  def from_string(string) do
-    {:ok, fuzzy_url} = Strings.from_string(string)
+  @spec from_string(String.t, [tuple]) :: Fuzzyurl.t
+  def from_string(string, opts \\ []) when is_binary(string) do
+    default_value = if opts[:mask], do: "*", else: nil
+    {:ok, fuzzy_url} = Strings.from_string(string, default_value: default_value)
     fuzzy_url
   end
 
