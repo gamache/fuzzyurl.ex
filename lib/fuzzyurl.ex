@@ -188,7 +188,7 @@ defmodule Fuzzyurl do
   wildcards) resembles `url` (which may not), or `:no_match` in the
   case of a conflict.
 
-  `url` may be a Fuzzyurl or a string.
+  `mask` and `url` may each be a Fuzzyurl or a string.
 
       iex> Fuzzyurl.match("http://example.com", "http://example.com")
       2
