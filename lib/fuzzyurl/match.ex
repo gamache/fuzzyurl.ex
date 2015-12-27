@@ -86,20 +86,21 @@ defmodule Fuzzyurl.Match do
 
 
   @doc ~S"""
-  From a list of Fuzzyurl masks, returns the one which best matches `url`.
-  Returns nil if none of `masks` match.
+  From a list of Fuzzyurl masks, returns the list index of the one which
+  best matches `url`.  Returns nil if none of `masks` match.
 
       iex> masks = [Fuzzyurl.mask(path: "/foo/*"), Fuzzyurl.mask(path: "/foo/bar"), Fuzzyurl.mask]
-      iex> Fuzzyurl.Match.best_match(masks, Fuzzyurl.from_string("http://exmaple.com/foo/bar"))
-      %Fuzzyurl{fragment: "*", hostname: "*", password: "*", path: "/foo/bar", port: "*", protocol: "*", query: "*", username: "*"}
+      iex> Fuzzyurl.Match.best_match_index(masks, Fuzzyurl.from_string("http://exmaple.com/foo/bar"))
+      1
   """
-  def best_match(masks, url) do
-    {mask, _} = masks
-                |> Enum.map(fn (m) -> {m, match(m, url)} end)
-                |> Enum.filter(fn ({_, score}) -> score != :no_match end)
-                |> Enum.sort(fn ({_, a}, {_, b}) -> a >= b end)
-                |> List.first
-    mask
+  def best_match_index(masks, url) do
+    {index, _} = masks
+                 |> Enum.with_index
+                 |> Enum.map(fn ({m, i}) -> {i, match(m, url)} end)
+                 |> Enum.filter(fn ({_, score}) -> score != :no_match end)
+                 |> Enum.sort(fn ({_, a}, {_, b}) -> a >= b end)
+                 |> List.first
+    index
   end
 
 end

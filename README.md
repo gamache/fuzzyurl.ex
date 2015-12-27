@@ -99,8 +99,14 @@ the mask which most closely matches the URL:
 
     iex> masks = ["/foo/*", "/foo/bar", Fuzzyurl.mask]
     iex> Fuzzyurl.best_match(masks, "http://example.com/foo/bar")
-    %Fuzzyurl{fragment: "*", hostname: "*", password: "*", path: "/foo/bar", port: "*", protocol: "*", query: "*", username: "*"}
+    "/foo/bar"
 
+If you'd prefer the list index of the best-matching URL mask, use
+`Fuzzyurl.best_match_index` instead:
+
+    iex> masks = ["/foo/*", "/foo/bar", Fuzzyurl.mask]
+    iex> Fuzzyurl.best_match_index(masks, "http://example.com/foo/bar")
+    1
 
 ## Authorship and License
 

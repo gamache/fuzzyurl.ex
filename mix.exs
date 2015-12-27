@@ -41,10 +41,11 @@ defmodule Fuzzyurl.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:ex_spec, "~> 1.0.0", only: :test},
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.10", only: :dev},
-      {:excoveralls, "~> 0.4", only: :test}
+      {:ex_spec, "~> 1.0.0", only: :test},
+      {:excoveralls, "~> 0.4", only: :test},
+      {:poison, "~> 1.5", only: :test},
     ]
   end
 end

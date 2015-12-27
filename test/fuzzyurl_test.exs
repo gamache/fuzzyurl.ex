@@ -129,5 +129,11 @@ defmodule FuzzyurlTest do
       assert(%Fuzzyurl{} = Fuzzyurl.best_match([Fuzzyurl.mask], Fuzzyurl.new))
     end
   end
+
+  describe "best_match_index" do
+    it "is delegated" do
+      assert(0 == Fuzzyurl.best_match_index([Fuzzyurl.mask], Fuzzyurl.new))
+    end
+  end
 end
 

@@ -7,6 +7,7 @@ defmodule Fuzzyurl.MatchTest do
     it "returns 0 for full wildcard" do
       assert(0 == fuzzy_match("*", "lol"))
       assert(0 == fuzzy_match("*", "*"))
+      assert(0 == fuzzy_match("*", nil))
     end
 
     it "returns 1 for exact match" do

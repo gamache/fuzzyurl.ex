@@ -76,8 +76,14 @@ defmodule Fuzzyurl do
 
       iex> masks = ["/foo/*", "/foo/bar", Fuzzyurl.mask]
       iex> Fuzzyurl.best_match(masks, "http://example.com/foo/bar")
-      %Fuzzyurl{fragment: "*", hostname: "*", password: "*", path: "/foo/bar", port: "*", protocol: "*", query: "*", username: "*"}
+      "/foo/bar"
 
+  If you'd prefer the list index of the best-matching URL mask, use
+  `Fuzzyurl.best_match_index` instead:
+
+      iex> masks = ["/foo/*", "/foo/bar", Fuzzyurl.mask]
+      iex> Fuzzyurl.best_match_index(masks, "http://example.com/foo/bar")
+      1
   """
 
   @type t :: %Fuzzyurl{}
@@ -252,13 +258,30 @@ defmodule Fuzzyurl do
 
       iex> masks = ["/foo/*", "/foo/bar", Fuzzyurl.mask]
       iex> Fuzzyurl.best_match(masks, "http://example.com/foo/bar")
-      %Fuzzyurl{fragment: "*", hostname: "*", password: "*", path: "/foo/bar", port: "*", protocol: "*", query: "*", username: "*"}
+      "/foo/bar"
   """
-  @spec best_match([string_or_fuzzyurl], string_or_fuzzyurl) :: Fuzzyurl.t | nil
+  @spec best_match([string_or_fuzzyurl], string_or_fuzzyurl) :: string_or_fuzzyurl | nil
   def best_match(masks, url) do
+    index = best_match_index(masks, url)
+    if index, do: Enum.at(masks, index), else: nil
+  end
+
+
+  @doc ~S"""
+  From a list of Fuzzyurl masks, returns the list index of the one which
+  best matches `url`.  Returns nil if none of `masks` match.
+
+  `url` and each mask may be a Fuzzyurl or a string.
+
+      iex> masks = ["/foo/*", "/foo/bar", Fuzzyurl.mask]
+      iex> Fuzzyurl.best_match_index(masks, "http://example.com/foo/bar")
+      1
+  """
+  @spec best_match_index([string_or_fuzzyurl], string_or_fuzzyurl) :: Integer | nil
+  def best_match_index(masks, url) do
     masks
     |> Enum.map(fn (m) -> if is_binary(m), do: from_string(m, mask: true), else: m end)
-    |> Match.best_match(if is_binary(url), do: from_string(url), else: url)
+    |> Match.best_match_index(if is_binary(url), do: from_string(url), else: url)
   end
 
 
