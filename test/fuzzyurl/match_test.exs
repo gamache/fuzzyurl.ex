@@ -16,28 +16,28 @@ defmodule Fuzzyurl.MatchTest do
 
     it "handles *.example.com" do
       assert(0 == fuzzy_match("*.example.com", "api.v1.example.com"))
-      assert(:no_match == fuzzy_match("*.example.com", "example.com"))
+      assert(nil == fuzzy_match("*.example.com", "example.com"))
     end
 
     it "handles **.example.com" do
       assert(0 == fuzzy_match("**.example.com", "api.v1.example.com"))
       assert(0 == fuzzy_match("**.example.com", "example.com"))
-      assert(:no_match == fuzzy_match("**.example.com", "zzzexample.com"))
+      assert(nil == fuzzy_match("**.example.com", "zzzexample.com"))
     end
 
     it "handles path/*" do
       assert(0 == fuzzy_match("path/*", "path/a/b/c"))
-      assert(:no_match == fuzzy_match("path/*", "path"))
+      assert(nil == fuzzy_match("path/*", "path"))
     end
 
     it "handles path/**" do
       assert(0 == fuzzy_match("path/**", "path/a/b/c"))
       assert(0 == fuzzy_match("path/**", "path"))
-      assert(:no_match == fuzzy_match("path/**", "pathzzz"))
+      assert(nil == fuzzy_match("path/**", "pathzzz"))
     end
 
-    it "returns :no_match for bad matches with no wildcards" do
-      assert(:no_match == fuzzy_match("asdf", "oh no"))
+    it "returns nil for bad matches with no wildcards" do
+      assert(nil == fuzzy_match("asdf", "oh no"))
     end
   end
 
@@ -62,14 +62,14 @@ defmodule Fuzzyurl.MatchTest do
       mask = %{Fuzzyurl.mask | port: "80"}
       url = %Fuzzyurl{protocol: "http"}
       assert(1 == match(mask, url))
-      assert(:no_match == match(mask, %Fuzzyurl{url | port: "443"}))
+      assert(nil == match(mask, %Fuzzyurl{url | port: "443"}))
     end
 
     it "infers port from protocol" do
       mask = %{Fuzzyurl.mask | protocol: "https"}
       url = %Fuzzyurl{port: "443"}
       assert(1 == match(mask, url))
-      assert(:no_match == match(mask, %Fuzzyurl{url | protocol: "http"}))
+      assert(nil == match(mask, %Fuzzyurl{url | protocol: "http"}))
     end
   end
 

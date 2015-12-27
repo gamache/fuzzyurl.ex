@@ -2,13 +2,13 @@ defmodule Fuzzyurl.Match do
 
   @doc ~S"""
   Returns an integer representing how closely `mask` (which may have
-  wildcards) resembles `url` (which may not), or `:no_match` in the
+  wildcards) resembles `url` (which may not), or `nil` in the
   case of a conflict.
   """
-  @spec match(%Fuzzyurl{}, %Fuzzyurl{}) :: non_neg_integer | :no_match
+  @spec match(%Fuzzyurl{}, %Fuzzyurl{}) :: non_neg_integer | nil
   def match(%Fuzzyurl{}=mask, %Fuzzyurl{}=url) do
     scores = match_scores(mask, url) |> Map.from_struct |> Map.values
-    if Enum.member?(scores, :no_match), do: :no_match, else: Enum.sum(scores)
+    if Enum.member?(scores, nil), do: nil, else: Enum.sum(scores)
   end
 
 
@@ -18,7 +18,7 @@ defmodule Fuzzyurl.Match do
   """
   @spec matches?(%Fuzzyurl{}, %Fuzzyurl{}) :: boolean
   def matches?(%Fuzzyurl{}=mask, %Fuzzyurl{}=url) do
-    if match(mask, url) == :no_match, do: false, else: true
+    if match(mask, url) == nil, do: false, else: true
   end
 
 
@@ -49,7 +49,7 @@ defmodule Fuzzyurl.Match do
 
 
   @doc ~S"""
-  Returns 0 for wildcard match, 1 for exact match, or :no_match otherwise.
+  Returns 0 for wildcard match, 1 for exact match, or nil otherwise.
 
   Wildcard language:
 
@@ -61,7 +61,7 @@ defmodule Fuzzyurl.Match do
 
   Any other form is treated as a literal match.
   """
-  @spec fuzzy_match(String.t, String.t) :: 0 | 1 | :no_match
+  @spec fuzzy_match(String.t, String.t) :: 0 | 1 | nil
   def fuzzy_match(mask, value) when is_binary(mask) and is_binary(value) do
     case {mask, value, String.reverse(mask), String.reverse(value)} do
       {"*", _, _, _} ->
@@ -69,20 +69,20 @@ defmodule Fuzzyurl.Match do
       {x, x, _, _} ->
         1
       {"**." <> m, v, _, _} ->
-        if m == v or String.ends_with?(v, "."<>m), do: 0, else: :no_match
+        if m == v or String.ends_with?(v, "."<>m), do: 0, else: nil
       {"*" <> m, v, _, _} ->
-        if String.ends_with?(v, m), do: 0, else: :no_match
+        if String.ends_with?(v, m), do: 0, else: nil
       {_, _, "**/" <> m, v} ->
-        if m == v or String.ends_with?(v, "/"<>m), do: 0, else: :no_match
+        if m == v or String.ends_with?(v, "/"<>m), do: 0, else: nil
       {_, _, "*" <> m, v} ->
-        if String.ends_with?(v, m), do: 0, else: :no_match
+        if String.ends_with?(v, m), do: 0, else: nil
       _ ->
-        :no_match
+        nil
     end
   end
   def fuzzy_match("*", nil), do: 0
-  def fuzzy_match(_, nil), do: :no_match
-  def fuzzy_match(nil, _), do: :no_match
+  def fuzzy_match(_, nil), do: nil
+  def fuzzy_match(nil, _), do: nil
 
 
   @doc ~S"""
@@ -94,13 +94,13 @@ defmodule Fuzzyurl.Match do
       1
   """
   def best_match_index(masks, url) do
-    {index, _} = masks
-                 |> Enum.with_index
-                 |> Enum.map(fn ({m, i}) -> {i, match(m, url)} end)
-                 |> Enum.filter(fn ({_, score}) -> score != :no_match end)
-                 |> Enum.sort(fn ({_, a}, {_, b}) -> a >= b end)
-                 |> List.first
-    index
+    masks
+    |> Enum.with_index
+    |> Enum.map(fn ({m, i}) -> {i, match(m, url)} end)
+    |> Enum.filter(fn ({_i, score}) -> score != nil end)
+    |> Enum.sort(fn ({_ia, a}, {_ib, b}) -> a >= b end)
+    |> List.first
+    |> elem(0)
   end
 
 end

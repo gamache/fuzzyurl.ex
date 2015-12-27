@@ -41,7 +41,7 @@ defmodule Fuzzyurl.Strings do
   end
 
   defp from_named_captures(nc, opts) do
-    dv = opts[:default_value] # default nil
+    dv = opts[:default] # default nil
     blank_fu = Fuzzyurl.new(dv, dv, dv, dv, dv, dv, dv, dv)
 
     nc

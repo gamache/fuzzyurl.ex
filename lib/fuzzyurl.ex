@@ -191,7 +191,7 @@ defmodule Fuzzyurl do
 
   @doc ~S"""
   Returns an integer representing how closely `mask` (which may have
-  wildcards) resembles `url` (which may not), or `:no_match` in the
+  wildcards) resembles `url` (which may not), or `nil` in the
   case of a conflict.
 
   `mask` and `url` may each be a Fuzzyurl or a string.
@@ -203,11 +203,11 @@ defmodule Fuzzyurl do
       iex> Fuzzyurl.match("**.example.com", "http://example.com")
       0
       iex> Fuzzyurl.match("*.example.com", "http://example.com")
-      :no_match
+      nil
   """
-  @spec match(string_or_fuzzyurl, string_or_fuzzyurl) :: non_neg_integer | :no_match
+  @spec match(string_or_fuzzyurl, string_or_fuzzyurl) :: non_neg_integer | nil
   def match(mask, url) do
-    m = if is_binary(mask), do: from_string(mask, mask: true), else: mask
+    m = if is_binary(mask), do: from_string(mask, default: "*"), else: mask
     u = if is_binary(url), do: from_string(url), else: url
     Match.match(m, u)
   end
@@ -226,7 +226,7 @@ defmodule Fuzzyurl do
   """
   @spec matches?(string_or_fuzzyurl, string_or_fuzzyurl) :: false | true
   def matches?(mask, url) do
-    m = if is_binary(mask), do: from_string(mask, mask: true), else: mask
+    m = if is_binary(mask), do: from_string(mask, default: "*"), else: mask
     u = if is_binary(url), do: from_string(url), else: url
     Match.matches?(m, u)
   end
@@ -234,7 +234,7 @@ defmodule Fuzzyurl do
 
   @doc ~S"""
   Returns a Fuzzyurl struct containing values indicating match quality:
-  0 for a wildcard match, 1 for exact match, and :no_match otherwise.
+  0 for a wildcard match, 1 for exact match, and nil otherwise.
 
   `mask` and `url` may each be a Fuzzyurl or a string.
 
@@ -244,7 +244,7 @@ defmodule Fuzzyurl do
   """
   @spec match_scores(string_or_fuzzyurl, string_or_fuzzyurl) :: Fuzzyurl.t
   def match_scores(mask, url) do
-    m = if is_binary(mask), do: from_string(mask, mask: true), else: mask
+    m = if is_binary(mask), do: from_string(mask, default: "*"), else: mask
     u = if is_binary(url), do: from_string(url), else: url
     Match.match_scores(m, u)
   end
@@ -280,7 +280,7 @@ defmodule Fuzzyurl do
   @spec best_match_index([string_or_fuzzyurl], string_or_fuzzyurl) :: Integer | nil
   def best_match_index(masks, url) do
     masks
-    |> Enum.map(fn (m) -> if is_binary(m), do: from_string(m, mask: true), else: m end)
+    |> Enum.map(fn (m) -> if is_binary(m), do: from_string(m, default: "*"), else: m end)
     |> Match.best_match_index(if is_binary(url), do: from_string(url), else: url)
   end
 
@@ -299,18 +299,17 @@ defmodule Fuzzyurl do
 
 
   @doc ~S"""
-  Creates a new Fuzzyurl from the given URL string.  Provide `mask: true`
+  Creates a new Fuzzyurl from the given URL string.  Provide `default: "*"`
   when creating a URL mask.
 
       iex> Fuzzyurl.from_string("http://example.com")
       %Fuzzyurl{fragment: nil, hostname: "example.com", password: nil, path: nil, port: nil, protocol: "http", query: nil, username: nil}
-      iex> Fuzzyurl.from_string("*.example.com:443", mask: true)
+      iex> Fuzzyurl.from_string("*.example.com:443", default: "*")
       %Fuzzyurl{fragment: "*", hostname: "*.example.com", password: "*", path: "*", port: "443", protocol: "*", query: "*", username: "*"}
   """
   @spec from_string(String.t, [tuple]) :: Fuzzyurl.t
   def from_string(string, opts \\ []) when is_binary(string) do
-    default_value = if opts[:mask], do: "*", else: nil
-    {:ok, fuzzy_url} = Strings.from_string(string, default_value: default_value)
+    {:ok, fuzzy_url} = Strings.from_string(string, opts)
     fuzzy_url
   end
 
