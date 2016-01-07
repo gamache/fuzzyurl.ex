@@ -141,7 +141,7 @@ defmodule Fuzzyurl do
       %Fuzzyurl{fragment: nil, hostname: "example.com", password: nil, path: nil, port: nil, protocol: "http", query: nil, username: nil}
   """
   @spec new([tuple]) :: Fuzzyurl.t
-  def new(params), do: new |> with(params)
+  def new(params), do: new |> Fuzzyurl.with(params)
 
 
   @doc ~S"""
@@ -156,7 +156,7 @@ defmodule Fuzzyurl do
   """
   @spec with(Fuzzyurl.t, map) :: Fuzzyurl.t
   def with(fuzzy_url, %{} = params) do
-    with(fuzzy_url, Map.to_list(params))
+    Fuzzyurl.with(fuzzy_url, Map.to_list(params))
   end
 
   @spec with(Fuzzyurl.t, [tuple]) :: Fuzzyurl.t
@@ -186,7 +186,7 @@ defmodule Fuzzyurl do
       %Fuzzyurl{fragment: "*", hostname: "example.com", password: "*", path: "*", port: "*", protocol: "*", query: "*", username: "*"}
   """
   @spec mask(map | [tuple]) :: Fuzzyurl.t
-  def mask(params), do: mask |> with(params)
+  def mask(params), do: mask |> Fuzzyurl.with(params)
 
 
   @doc ~S"""
