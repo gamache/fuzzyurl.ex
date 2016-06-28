@@ -3,7 +3,7 @@ defmodule Fuzzyurl.MatchTest do
   import Fuzzyurl.Match
   doctest Fuzzyurl.Match
 
-  describe "fuzzy_match" do
+  context "fuzzy_match" do
     it "returns 0 for full wildcard" do
       assert(0 == fuzzy_match("*", "lol"))
       assert(0 == fuzzy_match("*", "*"))
@@ -42,7 +42,7 @@ defmodule Fuzzyurl.MatchTest do
   end
 
 
-  describe "match" do
+  context "match" do
     it "returns 0 for full wildcard" do
       assert(0 == match(Fuzzyurl.mask, Fuzzyurl.new))
     end
@@ -74,7 +74,7 @@ defmodule Fuzzyurl.MatchTest do
   end
 
 
-  describe "matches?" do
+  context "matches?" do
     it "returns true on matches" do
       assert(true == matches?(Fuzzyurl.mask, Fuzzyurl.new))
     end
@@ -85,7 +85,7 @@ defmodule Fuzzyurl.MatchTest do
   end
 
 
-  describe "match_scores" do
+  context "match_scores" do
     it "returns all zeroes for full wildcard" do
       scores = match_scores(Fuzzyurl.mask, Fuzzyurl.new)
                |> Map.from_struct

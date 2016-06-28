@@ -43,7 +43,7 @@ defmodule Fuzzyurl.Mixfile do
     [
       {:earmark, "~> 0.1", only: :dev},
       {:ex_doc, "~> 0.10", only: :dev},
-      {:ex_spec, "~> 1.0.0", only: :test},
+      {:ex_spec, github: "appcues/ex_spec", tag: "1.1.0-elixir13", only: :test},
       {:excoveralls, "~> 0.4", only: :test},
       {:poison, "~> 1.5", only: :test},
     ]

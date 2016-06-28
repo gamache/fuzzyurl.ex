@@ -2,7 +2,7 @@ defmodule Fuzzyurl.StringsTest do
   use ExSpec, async: true
 
 
-  describe "from_string" do
+  context "from_string" do
     import Fuzzyurl.Strings, only: [from_string: 1]
 
     it "handles simple URLs" do
@@ -31,7 +31,7 @@ defmodule Fuzzyurl.StringsTest do
 
   end
 
-  describe "to_string" do
+  context "to_string" do
     it "handles simple URLs" do
       assert("example.com" == Fuzzyurl.Strings.to_string(%Fuzzyurl{
         hostname: "example.com"}))

@@ -3,7 +3,7 @@ defmodule Fuzzyurl.UrlSuiteTest do
 
   @matches File.read!("./test/matches.json") |> Poison.decode!
 
-  describe "URL test suite" do
+  context "URL test suite" do
     it "handles all positive matches" do
       @matches["positive_matches"]
       |> Enum.map(fn

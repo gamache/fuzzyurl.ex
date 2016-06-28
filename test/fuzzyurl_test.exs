@@ -2,7 +2,7 @@ defmodule FuzzyurlTest do
   use ExSpec, async: true
   doctest Fuzzyurl
 
-  describe "new/8" do
+  context "new/8" do
     it "returns the correct Fuzzyurl" do
       fu = %Fuzzyurl{
         protocol: "1",
@@ -18,13 +18,13 @@ defmodule FuzzyurlTest do
     end
   end
 
-  describe "new/0" do
+  context "new/0" do
     it "returns a blank Fuzzyurl" do
       assert(%Fuzzyurl{} == Fuzzyurl.new)
     end
   end
 
-  describe "new/1 with kwlist or map" do
+  context "new/1 with kwlist or map" do
     it "returns the correct Fuzzyurl" do
       fu = %Fuzzyurl{hostname: "example.com"}
       assert(fu == Fuzzyurl.new(hostname: "example.com"))
@@ -32,21 +32,21 @@ defmodule FuzzyurlTest do
     end
   end
 
-  describe "from_string" do
+  context "from_string" do
     it "creates Fuzzyurl from string" do
       fu = %Fuzzyurl{protocol: "http", hostname: "example.com", path: "/index.html"}
       assert(fu == Fuzzyurl.from_string("http://example.com/index.html"))
     end
   end
 
-  describe "to_string" do
+  context "to_string" do
     it "creates string from Fuzzyurl" do
       fu = Fuzzyurl.new(protocol: "http", hostname: "example.com")
       assert("http://example.com" == Fuzzyurl.to_string(fu))
     end
   end
 
-  describe "mask/0" do
+  context "mask/0" do
     it "creates the correct Fuzzyurl" do
       fu = %Fuzzyurl{
         protocol: "*",
@@ -62,7 +62,7 @@ defmodule FuzzyurlTest do
     end
   end
 
-  describe "mask/1" do
+  context "mask/1" do
     it "creates the correct Fuzzyurl" do
       fu = %Fuzzyurl{
         protocol: "*",
@@ -79,7 +79,7 @@ defmodule FuzzyurlTest do
     end
   end
 
-  describe "with" do
+  context "with" do
     it "creates the correct Fuzzyurl" do
       fu = %Fuzzyurl{
         protocol: "*",
@@ -106,31 +106,31 @@ defmodule FuzzyurlTest do
     end
   end
 
-  describe "match" do
+  context "match" do
     it "is delegated" do
       assert(0 = Fuzzyurl.match(Fuzzyurl.mask, Fuzzyurl.new))
     end
   end
 
-  describe "matches?" do
+  context "matches?" do
     it "is delegated" do
       assert(true = Fuzzyurl.matches?(Fuzzyurl.mask, Fuzzyurl.new))
     end
   end
 
-  describe "match_scores" do
+  context "match_scores" do
     it "is delegated" do
       assert(%{} = Fuzzyurl.match_scores(Fuzzyurl.mask, Fuzzyurl.new))
     end
   end
 
-  describe "best_match" do
+  context "best_match" do
     it "is delegated" do
       assert(%Fuzzyurl{} = Fuzzyurl.best_match([Fuzzyurl.mask], Fuzzyurl.new))
     end
   end
 
-  describe "best_match_index" do
+  context "best_match_index" do
     it "is delegated" do
       assert(0 == Fuzzyurl.best_match_index([Fuzzyurl.mask], Fuzzyurl.new))
     end
