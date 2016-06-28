@@ -18,7 +18,7 @@ add it as a dependency:
 
 ```elixir
 defp deps do
-  [{:fuzzyurl, "~> 0.8.0"}]
+  [{:fuzzyurl, "~> 0.9.0"}]
 end
 ```
 
