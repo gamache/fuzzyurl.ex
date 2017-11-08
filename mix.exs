@@ -13,7 +13,7 @@ defmodule Fuzzyurl.Mixfile do
         licenses: ["Apache 2.0"],
         links: %{"GitHub" => "https://github.com/gamache/fuzzyurl.ex"}
       ],
-      version: "0.9.0",
+      version: "0.9.1",
       elixir: "~> 1.0",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
