@@ -37,6 +37,12 @@ defmodule FuzzyurlTest do
       fu = %Fuzzyurl{protocol: "http", hostname: "example.com", path: "/index.html"}
       assert(fu == Fuzzyurl.from_string("http://example.com/index.html"))
     end
+
+    it "raises on invalid input" do
+      assert_raise ArgumentError, fn ->
+        Fuzzyurl.from_string("http:\\\\blah")
+      end
+    end
   end
 
   context "to_string" do

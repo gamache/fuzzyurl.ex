@@ -307,10 +307,14 @@ defmodule Fuzzyurl do
       iex> Fuzzyurl.from_string("*.example.com:443", default: "*")
       %Fuzzyurl{fragment: "*", hostname: "*.example.com", password: "*", path: "*", port: "443", protocol: "*", query: "*", username: "*"}
   """
-  @spec from_string(String.t, [tuple]) :: Fuzzyurl.t
+  @spec from_string(String.t, [tuple]) :: Fuzzyurl.t | no_return
   def from_string(string, opts \\ []) when is_binary(string) do
-    {:ok, fuzzy_url} = Strings.from_string(string, opts)
-    fuzzy_url
+    case Strings.from_string(string, opts) do
+      {:ok, fuzzy_url} ->
+        fuzzy_url
+      {:error, msg} ->
+        raise ArgumentError, msg
+    end
   end
 
 end
