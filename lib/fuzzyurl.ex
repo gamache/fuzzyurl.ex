@@ -300,7 +300,8 @@ defmodule Fuzzyurl do
 
   @doc ~S"""
   Creates a new Fuzzyurl from the given URL string.  Provide `default: "*"`
-  when creating a URL mask.
+  when creating a URL mask.  Raises `ArgumentError` if input string is
+  not a parseable URL.
 
       iex> Fuzzyurl.from_string("http://example.com")
       %Fuzzyurl{fragment: nil, hostname: "example.com", password: nil, path: nil, port: nil, protocol: "http", query: nil, username: nil}
