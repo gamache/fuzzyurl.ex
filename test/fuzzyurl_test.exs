@@ -37,6 +37,11 @@ defmodule FuzzyurlTest do
       fu = %Fuzzyurl{protocol: "http", hostname: "example.com", path: "/index.html"}
       assert(fu == Fuzzyurl.from_string("http://example.com/index.html"))
     end
+
+    it "fails with an error tuple if string can't be parsed" do
+      assert {:error, message} = Fuzzyurl.from_string("http:\\\\in.valid")
+      assert message == "input string couldn't be parsed"
+    end
   end
 
   context "to_string" do

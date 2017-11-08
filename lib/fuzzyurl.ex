@@ -309,9 +309,8 @@ defmodule Fuzzyurl do
   """
   @spec from_string(String.t, [tuple]) :: Fuzzyurl.t
   def from_string(string, opts \\ []) when is_binary(string) do
-    {:ok, fuzzy_url} = Strings.from_string(string, opts)
-    fuzzy_url
+    with {:ok, fuzzy_url} <- Strings.from_string(string, opts),
+    do: fuzzy_url
   end
-
 end
 
