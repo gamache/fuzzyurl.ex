@@ -1,6 +1,7 @@
 defmodule Fuzzyurl.ProtocolsTest do
   use ExSpec, async: true
   import Fuzzyurl.Protocols
+  doctest Fuzzyurl.Protocols
 
   context "get_port" do
     it "gets port by protocol" do
@@ -19,4 +20,3 @@ defmodule Fuzzyurl.ProtocolsTest do
     end
   end
 end
-

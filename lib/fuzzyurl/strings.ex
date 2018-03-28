@@ -24,13 +24,14 @@ defmodule Fuzzyurl.Strings do
   Attempts to parse the given string as a URL, and returns either
   {:ok, fuzzy_url} or {:error, message}.
   """
-  @spec from_string(String.t, []) :: {:ok, Fuzzyurl.t} | {:error, String.t}
+  @spec from_string(String.t(), []) :: {:ok, Fuzzyurl.t()} | {:error, String.t()}
   def from_string(string, opts \\ [])
 
   def from_string(string, opts) when is_binary(string) do
     case Regex.named_captures(@regex, string) do
       nil ->
         {:error, "input string couldn't be parsed"}
+
       nc ->
         {:ok, from_named_captures(nc, opts)}
     end
@@ -41,38 +42,38 @@ defmodule Fuzzyurl.Strings do
   end
 
   defp from_named_captures(nc, opts) do
-    dv = opts[:default] # default nil
+    # default nil
+    dv = opts[:default]
     blank_fu = Fuzzyurl.new(dv, dv, dv, dv, dv, dv, dv, dv)
 
     nc
-    |> Map.to_list
-    |> Enum.reduce(blank_fu, fn ({k,v}, acc) ->
-         if v != "" do
-           Map.put(acc, String.to_atom(k), v)
-         else
-           acc
-         end
-       end)
+    |> Map.to_list()
+    |> Enum.reduce(blank_fu, fn {k, v}, acc ->
+      if v != "" do
+        Map.put(acc, String.to_atom(k), v)
+      else
+        acc
+      end
+    end)
   end
-
 
   @doc ~S"""
   Returns a string representation of the given Fuzzyurl.
   """
-  @spec to_string(%Fuzzyurl{}) :: String.t
-  def to_string(%Fuzzyurl{}=fu) do
+  @spec to_string(%Fuzzyurl{}) :: String.t()
+  def to_string(%Fuzzyurl{} = fu) do
     url_pieces = [
-      (if fu.protocol, do: "#{fu.protocol}://", else: ""),
-      (if fu.username, do: "#{fu.username}",    else: ""),
-      (if fu.password, do: ":#{fu.password}",   else: ""),
-      (if fu.username, do: "@",                 else: ""),
-      (if fu.hostname, do: "#{fu.hostname}",    else: ""),
-      (if fu.port,     do: ":#{fu.port}",       else: ""),
-      (if fu.path,     do: "#{fu.path}",        else: ""),
-      (if fu.query,    do: "?#{fu.query}",      else: ""),
-      (if fu.fragment, do: "##{fu.fragment}",   else: "")
+      if(fu.protocol, do: "#{fu.protocol}://", else: ""),
+      if(fu.username, do: "#{fu.username}", else: ""),
+      if(fu.password, do: ":#{fu.password}", else: ""),
+      if(fu.username, do: "@", else: ""),
+      if(fu.hostname, do: "#{fu.hostname}", else: ""),
+      if(fu.port, do: ":#{fu.port}", else: ""),
+      if(fu.path, do: "#{fu.path}", else: ""),
+      if(fu.query, do: "?#{fu.query}", else: ""),
+      if(fu.fragment, do: "##{fu.fragment}", else: "")
     ]
-    url_pieces |> Enum.join
-  end
 
+    url_pieces |> Enum.join()
+  end
 end

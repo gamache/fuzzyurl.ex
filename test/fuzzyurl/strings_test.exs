@@ -1,6 +1,6 @@
 defmodule Fuzzyurl.StringsTest do
   use ExSpec, async: true
-
+  doctest Fuzzyurl.Strings
 
   context "from_string" do
     import Fuzzyurl.Strings, only: [from_string: 1]
@@ -18,7 +18,13 @@ defmodule Fuzzyurl.StringsTest do
     end
 
     it "handles rich URLs" do
-      assert({:ok, fu} = from_string("http://user_1:pass%20word@foo.example.com:8000/some/path?awesome=true&encoding=ebcdic#/hi/mom"))
+      assert(
+        {:ok, fu} =
+          from_string(
+            "http://user_1:pass%20word@foo.example.com:8000/some/path?awesome=true&encoding=ebcdic#/hi/mom"
+          )
+      )
+
       assert("http" == fu.protocol)
       assert("user_1" == fu.username)
       assert("pass%20word" == fu.password)
@@ -28,17 +34,25 @@ defmodule Fuzzyurl.StringsTest do
       assert("awesome=true&encoding=ebcdic" == fu.query)
       assert("/hi/mom" == fu.fragment)
     end
-
   end
 
   context "to_string" do
     it "handles simple URLs" do
-      assert("example.com" == Fuzzyurl.Strings.to_string(%Fuzzyurl{
-        hostname: "example.com"}))
-      assert("http://example.com" == Fuzzyurl.Strings.to_string(%Fuzzyurl{
-        protocol: "http", hostname: "example.com"}))
-      assert("http://example.com/oh/yeah" == Fuzzyurl.Strings.to_string(%Fuzzyurl{
-        protocol: "http", hostname: "example.com", path: "/oh/yeah"}))
+      assert("example.com" == Fuzzyurl.Strings.to_string(%Fuzzyurl{hostname: "example.com"}))
+
+      assert(
+        "http://example.com" ==
+          Fuzzyurl.Strings.to_string(%Fuzzyurl{protocol: "http", hostname: "example.com"})
+      )
+
+      assert(
+        "http://example.com/oh/yeah" ==
+          Fuzzyurl.Strings.to_string(%Fuzzyurl{
+            protocol: "http",
+            hostname: "example.com",
+            path: "/oh/yeah"
+          })
+      )
     end
 
     it "handles rich URLs" do
@@ -52,9 +66,11 @@ defmodule Fuzzyurl.StringsTest do
         query: "admin=true",
         fragment: "index"
       }
-      assert(Fuzzyurl.Strings.to_string(fu) ==
-        "https://usah:pash@api.example.com:443/secret/endpoint?admin=true#index")
-    end
 
+      assert(
+        Fuzzyurl.Strings.to_string(fu) ==
+          "https://usah:pash@api.example.com:443/secret/endpoint?admin=true#index"
+      )
+    end
   end
 end

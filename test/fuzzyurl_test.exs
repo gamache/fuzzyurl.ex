@@ -14,13 +14,14 @@ defmodule FuzzyurlTest do
         query: "7",
         fragment: "8"
       }
+
       assert(Fuzzyurl.new("1", "2", "3", "4", "5", "6", "7", "8") == fu)
     end
   end
 
   context "new/0" do
     it "returns a blank Fuzzyurl" do
-      assert(%Fuzzyurl{} == Fuzzyurl.new)
+      assert(%Fuzzyurl{} == Fuzzyurl.new())
     end
   end
 
@@ -58,7 +59,8 @@ defmodule FuzzyurlTest do
         query: "*",
         fragment: "*"
       }
-      assert(fu == Fuzzyurl.mask)
+
+      assert(fu == Fuzzyurl.mask())
     end
   end
 
@@ -74,6 +76,7 @@ defmodule FuzzyurlTest do
         query: "*",
         fragment: "*"
       }
+
       assert(fu == Fuzzyurl.mask(hostname: "example.com"))
       assert(fu == Fuzzyurl.mask(%{hostname: "example.com"}))
     end
@@ -91,6 +94,7 @@ defmodule FuzzyurlTest do
         query: "*",
         fragment: "*"
       }
+
       fu2 = %Fuzzyurl{
         protocol: "http",
         username: "*",
@@ -101,6 +105,7 @@ defmodule FuzzyurlTest do
         query: "*",
         fragment: "*"
       }
+
       assert(fu2 == Fuzzyurl.with(fu, protocol: "http", path: "/foo"))
       assert(fu2 == Fuzzyurl.with(fu, %{protocol: "http", path: "/foo"}))
     end
@@ -108,32 +113,31 @@ defmodule FuzzyurlTest do
 
   context "match" do
     it "is delegated" do
-      assert(0 = Fuzzyurl.match(Fuzzyurl.mask, Fuzzyurl.new))
+      assert(0 = Fuzzyurl.match(Fuzzyurl.mask(), Fuzzyurl.new()))
     end
   end
 
   context "matches?" do
     it "is delegated" do
-      assert(true = Fuzzyurl.matches?(Fuzzyurl.mask, Fuzzyurl.new))
+      assert(true = Fuzzyurl.matches?(Fuzzyurl.mask(), Fuzzyurl.new()))
     end
   end
 
   context "match_scores" do
     it "is delegated" do
-      assert(%{} = Fuzzyurl.match_scores(Fuzzyurl.mask, Fuzzyurl.new))
+      assert(%{} = Fuzzyurl.match_scores(Fuzzyurl.mask(), Fuzzyurl.new()))
     end
   end
 
   context "best_match" do
     it "is delegated" do
-      assert(%Fuzzyurl{} = Fuzzyurl.best_match([Fuzzyurl.mask], Fuzzyurl.new))
+      assert(%Fuzzyurl{} = Fuzzyurl.best_match([Fuzzyurl.mask()], Fuzzyurl.new()))
     end
   end
 
   context "best_match_index" do
     it "is delegated" do
-      assert(0 == Fuzzyurl.best_match_index([Fuzzyurl.mask], Fuzzyurl.new))
+      assert(0 == Fuzzyurl.best_match_index([Fuzzyurl.mask()], Fuzzyurl.new()))
     end
   end
 end
-

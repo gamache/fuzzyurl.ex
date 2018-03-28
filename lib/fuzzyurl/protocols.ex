@@ -14,7 +14,7 @@ defmodule Fuzzyurl.Protocols do
   def get_port(nil), do: nil
 
   def get_port(protocol) do
-    base_protocol = protocol |> String.split("+") |> List.last
+    base_protocol = protocol |> String.split("+") |> List.last()
     @ports_by_protocol[base_protocol]
   end
 
@@ -27,5 +27,4 @@ defmodule Fuzzyurl.Protocols do
   def get_protocol(port) do
     @protocols_by_port[port]
   end
-
 end
