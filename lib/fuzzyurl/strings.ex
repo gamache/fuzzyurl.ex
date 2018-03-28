@@ -24,7 +24,7 @@ defmodule Fuzzyurl.Strings do
   Attempts to parse the given string as a URL, and returns either
   {:ok, fuzzy_url} or {:error, message}.
   """
-  @spec from_string(String.t(), []) :: {:ok, Fuzzyurl.t()} | {:error, String.t()}
+  @spec from_string(String.t(), Keyword.t()) :: {:ok, Fuzzyurl.t()} | {:error, String.t()}
   def from_string(string, opts \\ [])
 
   def from_string(string, opts) when is_binary(string) do

@@ -7,7 +7,7 @@ defmodule Fuzzyurl.Match do
   @spec match(%Fuzzyurl{}, %Fuzzyurl{}) :: non_neg_integer | nil
   def match(%Fuzzyurl{} = mask, %Fuzzyurl{} = url) do
     scores = match_scores(mask, url) |> Map.from_struct() |> Map.values()
-    if Enum.member?(scores, nil), do: nil, else: Enum.sum(scores)
+    if nil in scores, do: nil, else: Enum.sum(scores)
   end
 
   @doc ~S"""
