@@ -1,7 +1,7 @@
 defmodule Fuzzyurl.UrlSuiteTest do
   use ExSpec, async: true
 
-  @matches File.read!("./test/matches.json") |> Poison.decode!
+  @matches File.read!("./test/matches.json") |> Jason.decode!
 
   context "URL test suite" do
     it "handles all positive matches" do
