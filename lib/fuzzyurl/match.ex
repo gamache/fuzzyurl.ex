@@ -92,7 +92,7 @@ defmodule Fuzzyurl.Match do
   best matches `url`.  Returns nil if none of `masks` match.
 
       iex> masks = [Fuzzyurl.mask(path: "/foo/*"), Fuzzyurl.mask(path: "/foo/bar"), Fuzzyurl.mask]
-      iex> Fuzzyurl.Match.best_match_index(masks, Fuzzyurl.from_string("http://exmaple.com/foo/bar"))
+      iex> Fuzzyurl.Match.best_match_index(masks, Fuzzyurl.from_string("http://example.com/foo/bar"))
       1
   """
   def best_match_index(masks, url) do
